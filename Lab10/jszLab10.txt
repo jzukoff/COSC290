@@ -1,0 +1,48 @@
+-- Josh Zukoff
+
+
+comp (f,g) a = g (f a) 
+				   
+--1 
+
+mspec1 'a' 0 = 1
+mspec1 'a' 1 = 2
+mspec1 'a' 2 = 3
+mspec1 'a' 3 = 0
+
+mspec1 'b' 0 = 0
+mspec1 'b' 1 = 1
+mspec1 'b' 2 = 2
+mspec1 'b' 3 = 3
+
+--2
+
+double x = 2*x
+add (x,y) = x + y
+
+monext f bin e [] = e
+monext f bin e (x:rest) = bin ((f x), monext f bin e rest)
+
+--3
+identity x = x
+fsm spec = monext spec comp identity
+
+fsm1 = fsm mspec1 
+
+--4
+
+lm mspec str = fsm mspec str 0
+
+--5
+
+mmspec1 = (mspec1, [0,2])
+
+
+inlist a [] = False
+inlist a (x:rest) = if (a == x)
+				    then True
+				    else inlist a (rest)  
+				    
+mm (mspec,finalstates) str = inlist (lm mspec str) finalstates
+
+mm1 = mm mmspec1 

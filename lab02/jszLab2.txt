@@ -1,0 +1,107 @@
+-- 1:
+
+{-
+Hugs> :type "hello world"
+"hello world" :: String
+-}
+{-
+Hugs> :type 'h'
+'h' :: Char
+-}
+{-
+Hugs> :type "h"
+"h" :: String
+-}
+
+stringvar = "abc"
+
+{-
+Main> :type stringvar
+stringvar :: [Char]
+-}
+
+-- Strings in Haskell are represented as arrays/lists of Chars
+
+-- 2:
+
+hd (x: rest) = x
+tl (head: tail) = tail
+
+{-
+Main> hd [1,2,3]
+1
+Main> hd []
+
+Program error: pattern match failure: hd []
+
+Main> tl [1,2,3]
+[2,3]
+Main> tl []
+
+Program error: pattern match failure: tl []
+
+Main> tl [1]
+[]
+Main> hd stringvar
+'a'
+Main> tl stringvar
+"bc"
+-}
+
+{-
+Main> :type hd
+hd :: [a] -> a
+Main> :type tl
+tl :: [a] -> [a]
+-}
+
+-- 3:
+
+mult1(x,y) = x * y
+mult2 x y = x * y
+
+{-
+Main> mult1(3,4)
+12
+Main> mult2 3 4
+12
+-}
+
+{-
+Main> :type mult1
+mult1 :: Num a => (a,a) -> a
+Main> :type mult2
+mult2 :: Num a => a -> a -> a
+-}
+
+-- 4:
+
+curry2 funct a b  = funct(a,b)
+uncurry2 funct(a,b) = funct a b
+
+add1 (x,y) = x + y
+add2 x y = x + y
+
+{-
+Main> curry2 mult1 2 3
+6
+Main> uncurry2 mult2 (3,4)
+12
+Main> curry2 add1 2 3
+5
+Main> uncurry2 add2(2,3)
+5
+-}
+
+{-
+Main> :type curry2
+curry2 :: ((a,b) -> c) -> a -> b -> c
+Main> :type uncurry2
+uncurry2 :: (a -> b -> c) -> (a,b) -> c
+-}
+
+-- 5: 
+
+{-
+Implement the set as a list which will have been tested for duplicates (and those duplicates will be removed) and then sorted. This makes inserting new elements into the list/set (in order) easier and duplicates will not be added.
+-}

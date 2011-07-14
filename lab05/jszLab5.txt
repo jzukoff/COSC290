@@ -1,0 +1,106 @@
+testlist = [1,2,3]
+
+--1
+
+double x = 2 * x
+add x y = x + y
+testmap [] y = []
+testmap (x:rest) y = [x y] ++ testmap (rest) y
+
+
+{-
+Main> map double testlist
+[2,4,6]
+
+Main> map add testlist
+ERROR - Cannot find "show" function for:
+*** Expression : map add testlist
+*** Of type    : [Integer -> Integer]
+
+Main> testmap (map add testlist) 10
+[11,12,13]
+
+Main> :type map add
+map add :: Num a => [a] -> [a -> a]
+
+map add takes a function add and list of numbers as input returns a list of the function that would add y to some number
+-}
+
+--2 
+
+r 1 = [2]
+r 2 = [3]
+r 3 = [1,3]
+r 4 = [1]
+
+s 1 = [10, 11]
+s 2 = [10, 12]
+s 3 = []
+
+t 1 = [2]
+t 2 = [3]
+t 3 = [1, 4]
+t 4 = [1]
+
+--3
+
+flatten [] = []
+flatten (x:rest) = x ++ flatten(rest)
+comp (s,r) a = fixlist(flatten (map s (r a)))
+
+{-
+Main> comp (s,r) 3
+[10,11]
+-}
+
+--4 
+
+relcomp n r = if (n == 1)
+			  then r
+			  else comp(r,relcomp (n-1) r)
+			
+{-
+Main> relcomp 1 r 1
+[2]
+Main> relcomp 2 t 1
+[3]
+Main> relcomp 3 t 1
+[1,4]
+Main> relcomp 4 t 1
+[2,1]
+-}
+
+--5
+inlist a [] = False
+inlist a (x:rest) = if (a == x)
+				    then True
+				    else inlist a (rest)  
+fixlist [] = []
+fixlist (x:rest) = if (inlist x (rest))
+				   then fixlist (rest)
+				   else [x] ++ fixlist(rest)
+
+reflexrel r a = fixlist (r a ++ [a])
+
+--6
+
+transrel rel a = fixlist(rel a ++ relcomp 2 rel a ++ relcomp 3 rel a ++ relcomp 4 rel a)
+
+--7
+
+trans2 1 rel a = rel a
+trans2 n rel a = rel a ++ (trans2 (n-1) (relcomp n rel) a)
+
+transrel2 n rel a= fixlist(trans2 n rel a)
+
+{-
+Main> transrel2 4 t 1
+[4,3,2,1]
+Main> transrel2 4 r 1
+[2,1,3]
+Main> transrel2 2 r 1
+[2,3]
+Main> transrel2 2 s 1
+
+Program error: pattern match failure: s 10
+-}

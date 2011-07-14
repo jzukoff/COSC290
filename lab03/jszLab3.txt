@@ -1,0 +1,86 @@
+data SET a = E | Add(a, SET a) deriving (Eq, Ord, Read, Show)
+
+inS a E = False
+inS a (Add(x, set)) = if x == a
+				 	  then True
+				      else inS a set
+{-
+Main> inS 'c' set1
+True
+-}
+{-
+Main> inS 'q' set1
+False
+-}
+				      
+addtoSet a s = if not (inS a s == True)
+			   then Add(a, s)
+			   else s
+
+{-
+Main> addtoSet 9 set4
+Add (9,Add (5,Add (6,Add (7,Add (8,E)))))
+-}
+			   
+union(s,E) = s
+union(E,t) = t
+union(s, (Add(y,set2))) = union((addtoSet y s), set2)
+
+{-
+Main> union(set1, set2)
+Add ('f',Add ('e',Add ('a',Add ('b',Add ('c',Add ('d',E))))))
+-}
+{-
+Main> union(set3, set4)
+Add (8,Add (7,Add (6,Add (5,Add (1,Add (2,Add (3,Add (4,E))))))))
+-}		
+
+inter(s,E) = E
+inter(s, (Add(y,set2))) = if (inS y s == True)
+						  then addtoSet y (inter(s, set2))
+						  else inter (s, set2)
+		
+{-
+Main> inter(set3,set4)
+E
+Main> inter(set3,set5)
+Add (3,Add (4,E))
+-}
+						  
+subSet(E,t) = True
+subSet((Add(x,set1)),t) = if (inS x t == False)
+						  then False
+						  else subSet(set1,t)
+						  
+{-
+Main> subSet(set5, set3)
+True
+Main> subSet(set3,set5)
+False
+-}
+
+
+setEq(s,t) = if (subSet(s,t) && subSet(t,s))
+			 then True
+			 else False
+{-
+Main> setEq(set2,set2)
+True
+Main> setEq(listToSet[3,4], listToSet[4,3])
+True
+Main> listToSet[3,4] == listToSet[4,3]
+False
+No setEq not the same as ==
+-}
+
+setToList E = []
+setToList (Add(x,rest)) = (x:(setToList rest))
+
+listToSet [] = E
+listToSet (x:rest) = addtoSet x (listToSet rest)
+
+set1 = listToSet("abcd")
+set2 = listToSet("cdef")
+set3 = listToSet[1,2,3,4]
+set4 = listToSet[5,6,7,8]
+set5 = listToSet[3,4]

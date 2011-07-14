@@ -1,0 +1,74 @@
+-- 1: Functions from Lab05
+flatten [] = []
+flatten (x:rest) = x ++ flatten(rest)
+comp (s,r) a = fixlist(flatten (map s (r a)))
+
+relcomp n r = if (n == 1)
+			  then r
+			  else comp(r,relcomp (n-1) r)
+			
+inlist a [] = False
+inlist a (x:rest) = if (a == x)
+				    then True
+				    else inlist a (rest)  
+fixlist [] = []
+fixlist (x:rest) = if (inlist x (rest))
+				   then fixlist (rest)
+				   else [x] ++ fixlist(rest)
+
+reflexrel r a = fixlist (r a ++ [a])
+
+
+trans2 1 rel a = rel a
+trans2 n rel a = (relcomp n rel a) ++ (trans2 (n-1) rel a)
+
+transrel2 n rel a= fixlist(trans2 n rel a)
+
+-- 2:
+
+rlist = [1,2,3,4]
+slist = [1,2,3,4]
+plist = [1,2,3,4]
+qlist = [1,2,3,4,5,6,7,8]
+
+r rlist 1 = [2,4]
+r rlist 2 = [3]
+r rlist 3 = [4]
+r rlist 4 = []
+
+s slist 1 = [2]
+s slist 2 = [3,4]
+s slist 3 = []
+s slist 4 = []
+
+p plist 1 = [3]
+p plist 2 = [3]
+p plist 3 = [4]
+p plist 4 = []
+
+q qlist 1 = [3]
+q qlist 2 = [4]
+q qlist 3 = [5]
+q qlist 4 = [6]
+q qlist 5 = [7]
+q qlist 6 = [7]
+q qlist 7 = [8]
+q qlist 8 = []
+
+-- 3: 
+
+transrelnew r rlist a = transrel2 (length  rlist) (r rlist) a
+
+reflexrelnew r rlist a = reflexrel (r rlist) a
+
+-- 4:
+
+posetr r rlist a = fixlist (transrelnew r rlist a ++ reflexrelnew r rlist a)
+
+-- 5:
+
+interlist l1 [] = []
+interlist [] l2 = []
+interlist (x:rest) l2 = if (inlist x l2)
+						then [x] ++ interlist rest l2
+						else interlist rest l2
